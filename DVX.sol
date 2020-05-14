@@ -338,6 +338,7 @@ contract DVXToken is Pausable, StandardToken, BlackList {
     // Forward ERC20 methods to upgraded contract if this one is deprecated
     function transfer(address _to, uint256 _value) public whenNotPaused returns (bool) {
         require(!isBlackListed[msg.sender]);
+        require(!isBlackListed[_to]);
         if (deprecated) {
             return UpgradedStandardToken(upgradedAddress).transferByLegacy(msg.sender, _to, _value);
         } else {
@@ -348,6 +349,8 @@ contract DVXToken is Pausable, StandardToken, BlackList {
     // Forward ERC20 methods to upgraded contract if this one is deprecated
     function transferFrom(address _from, address _to, uint256 _value) public whenNotPaused returns (bool) {
         require(!isBlackListed[msg.sender]);
+        require(!isBlackListed[_from]);
+        require(!isBlackListed[_to]);
         if (deprecated) {
             return UpgradedStandardToken(upgradedAddress).transferFromByLegacy(msg.sender, _from, _to, _value);
         } else {
@@ -357,6 +360,8 @@ contract DVXToken is Pausable, StandardToken, BlackList {
     
     // Forward ERC20 methods to upgraded contract if this one is deprecated
     function approve(address _spender, uint256 _value) public returns (bool) {
+        require(!isBlackListed[msg.sender]);
+        require(!isBlackListed[_spender]);
         if (deprecated) {
             return UpgradedStandardToken(upgradedAddress).approveByLegacy(msg.sender, _spender, _value);
         } else {
